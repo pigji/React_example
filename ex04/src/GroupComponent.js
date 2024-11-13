@@ -5,8 +5,7 @@ import CounterB from './CounterB';
 function GroupComponent(){
   console.log("GroupComponent 호출됨")
   const [value, setValue] = useState(0);
-  
-  return(
+  return (
     <div className='box'>
       <h1>GroupComponent</h1>
       <button onClick={() => setValue(value + 1)}>
