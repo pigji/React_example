@@ -1,0 +1,6 @@
+.App{
+  display:block;
+  border:1px solid black;
+  justify-content: space-between;
+}
+table{border:1px solid black;}

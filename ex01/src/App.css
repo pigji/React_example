@@ -1,0 +1,12 @@
+table{
+  border-collapse:collapse;
+  margin: 5px;
+}
+td{
+  border:1px solid gray;
+  padding:4px;
+}
+
+div{margin:10px; font-size:20px;}
+p.blue{color:blue;}
+p.green{color:green;}
