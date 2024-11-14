@@ -10,7 +10,10 @@ function GroupComponent(){
   
   //countA값을 1증가 시키는 함수
   //useCallback은 GroupComponent가 처음 마운트될때 생성이 되고, 리렌더링 될때는 다시 생성되지 않는다. 따라서 자식 컴포넌트로 increaseA함수를 다시 생성해서 전달하지 않기 때문에 GroupCompent가 리렌더링 되도 자식 컴포넌트가 리렌더링 되지 않는다.
+  
+  //useCallback : 컴포넌트가 리렌더링 될때 함수가 다시 생성되는 것을 막아줌
   const increaseA = useCallback(() => {setCountA(countA => countA + 1)}, [])
+  //countB값을 1증가 시키는 함수
   const increaseB = useCallback(() => {setCountB(countB => countB + 1)}, [])
   
 

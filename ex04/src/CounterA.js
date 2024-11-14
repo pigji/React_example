@@ -14,5 +14,5 @@ function CounterA({value, increase}){
     </div>
   )
 }
-
+//부모 컨포넌트의 상태가 변경되었을때 자식 컴포넌트가 리렌더링 되는 것을 막아줌.
 export default React.memo(CounterA);
