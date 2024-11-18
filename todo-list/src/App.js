@@ -3,25 +3,23 @@ import TodoInput from "./components/TodoInput";
 import TodoList from "./components/TodoList";
 import { useState, useRef, useCallback } from "react";
 
+//데이터를 2500개 생성해서 반환하는 함수
+function createBulkTodos(){
+  const array = []
+  for(let i = 1; i <= 2500; i++){
+    array.push({
+      id: i,
+      text: `할 일${i}`,
+      checked: false
+    })
+  }
+  return array;
+}
+
+
 function App() {
-  //todoListItem에 들어갈 데이터 배열
-  const [todos, setTodos]  = useState([
-    {
-      id: 1,
-      text: '리엑트의 기초 알아보기',
-      checked: true,
-    },
-    {
-      id: 2,
-      text: '컴포넌트 스타일링 해보기',
-      checked: true,
-    },
-    {
-      id: 3,
-      text: '자기소개서 작성하기',
-      checked: false,
-    }
-  ])
+  //todoListItem에 들어갈 데이터 배열(생성한 2500개의 데이터를 todos에 추가)
+  const [todos, setTodos]  = useState(createBulkTodos)
 
   //새로운 객체를 만들때마다 id값을 1씩 더해주어야 하므로 useRef훅을 사용하여 관리한다.
   //다음에 추가할 객체의 id값은 '4'이므로 초기값을 '4'로 전달
@@ -34,26 +32,26 @@ function App() {
       text,
       checked: false
     }
-    setTodos(todos.concat(todo))  //새 객체를 todos에 추가
+    setTodos(todos => todos.concat(todo))  //새 객체를 todos에 추가
     nextId.current += 1;  //nextId를 1 증가
-  }, [todos])
+  }, [])
 
   //app컴포넌트에서 id를 파라미터로 가져온다
   const onRemove = useCallback(id => {
     //id값이 일치하지 않는 배열 요소만 새로운 배열로 생성하여 todos에 다시 할당한다.
-    setTodos(todos.filter(todo => todo.id !== id))
-  }, [todos])
+    setTodos(todos => todos.filter(todo => todo.id !== id))
+  }, [])
 
   //
   const onToggle = useCallback(id => {
-    setTodos(
+    setTodos(todos =>
       todos.map(todo => 
         //todo.id와 해당 리스트의 id가 일치하면 checked값을 반전해서 할당
         //만약 일치하지 않으면 리스트 아이템을 그대로 할당한다.
         todo.id === id ? {...todo, checked: !todo.checked} : todo
       )
     )
-  }, [todos])
+  }, [])
 
   return (
     //TodoInput컴포넌트를 TodoContainer의 자식 컴포넌트로 전달
