@@ -66,49 +66,39 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
-//회원 추가
-app.post("/api/users", (req, res) => {
-  console.log(req.body); //req에 body안에 요청정보가 들어있음
+//회원 추가(비동기로 변경)
+app.post('/api/users', async (req, res) => {
+  console.log(req.body);//req에 body안에 요청정보가 들어있음
+
+  //sql쿼리문 분리
+  const sql = `INSERT INTO tbl_users
+    (email, pw, question, answer) 
+    VALUES (?, ?, ?, ?)`;
+
+  //비구조화 할당으로 요청 body로 전달된 데이터를 변수에 할당
+  let { email, password, question, answer } = req.body;
 
   //비밀번호 암호화
-  let enpw = bcrypt.hashSync(req.body.password, 10); //10번에 걸쳐서 암호화한다. 10보다 많이 할수 있지만 느려질수있다(10이면 충분하다)
+  let enpw = bcrypt.hashSync(password, 10);//10번에 걸쳐서 암호화한다. 10보다 많이 할수 있지만 느려질수있다(10이면 충분하다)
 
-  //tbl_users테이블에 새 사용자 정보를 삽입하는 SQL문, ?는 나중에 배열로 전달할 값의 자리를 표시
-  pool.query(
-    `INSERT INTO tbl_users
-    (email, pw, question, answer) 
-    VALUES (?, ?, ?, ?)`,
-    //pool.query에 전달할 실제 값들을 배열로 지정, password를 enpw(암호화)로 바꿔서 db로 전달
-    [req.body.email, enpw, req.body.question, req.body.answer],
-    (err, result, fields) => {
-      //sql쿼리 실행후 호출되는 콜백함수(에러정보, 실행결과, 필드 정보)
-
-      if (err !== null) {
-        //에러가 있다면 아래 코드블록을 실행한다
-        //아이디가 컬럼의 최대 허용 용량을 벗어났다 (1406)
-        if (err.errno === 1406) {
-          //객체에 담어서 에러메시지를 보내줌
-          res.status(400).json({ errCode: 1, errMsg: "아이디가 너무 길어요" });
-        } else if (err.errno === 1062) {
-          //중복된 아이디가 존재한다(1062)
-          res
-            .status(400)
-            .json({ errCode: 2, errMsg: "중복된 아이디가 존재합니다" });
-        } else {
-          // 그외 에러
-          res
-            .status(400)
-            .json({ errCode: 3, errMsg: "알수없는 에러가 발생했습니다" });
-        }
-      } else {
-        //에러가 없으면 아래 코드 블록을 실행
-        console.log(result); //데이터베이스에 삽입된 행에 대한 정보
-        //console.log(fields); //결과와 관련된 필드 정보
-        res.json("성공이야~!!"); //클라이언트에 성공 메시지를 json형식으로 반환한다
-      }
+  try{
+    let [result, fields] = await pool.query(sql, [email, enpw, question, answer]);
+    console.log(result)//데이터베이스에 삽입된 행에 대한 정보
+    console.log(fields);//결과와 관련된 필드 정보
+    res.json('성공이야~!!');//클라이언트에 성공 메시지를 json형식으로 반환한다
+  } catch (err) {
+    //아이디가 컬럼의 최대 허용 용량을 벗어났다 (1406)
+    if(err.errno === 1406){
+      //객체에 담어서 에러메시지를 보내줌
+      res.status(400).json({errCode: 1, errMsg:"아이디가 너무 길어요"});
+    }else if(err.errno === 1062){//중복된 아이디가 존재한다(1062)
+      res.status(400).json({errCode: 2, errMsg:"중복된 아이디가 존재합니다"});
+    }else{// 그외 에러
+      res.status(400).json({errCode: 3, errMsg:"알수없는 에러가 발생했습니다"});
     }
-  );
-});
+  }
+})
+
 
 //모든 사원 조회
 app.get("/emp", (req, res) => {
