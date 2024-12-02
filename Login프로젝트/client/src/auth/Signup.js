@@ -1,5 +1,8 @@
 import React, { useState } from 'react'
-import { ModalWrap, Modal, BgImg, AuthBody, AuthBox, AuthForm, Button, CancelIcon, ErrMsg, Input, InputBoxWrap, Option, Select, Wrap } from './auth.styles';
+import { 
+  ModalWrap, Modal, BgImg, AuthBody, AuthBox, AuthForm, 
+  Button, CancelIcon, ErrMsg, Input, InputBoxWrap, Option, Select, Wrap 
+} from '../styles/auth.styles';
 import CloseIcon from '@mui/icons-material/Close';
 //비동기 통신을 위한 라이브러리
 import axios from 'axios';

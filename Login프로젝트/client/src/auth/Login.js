@@ -1,8 +1,12 @@
-import { BgImg, AuthBody, AuthBox, AuthForm, AuthFooter, Button, CancelIcon, ErrMsg, Input, InputBoxWrap, Wrap, LogoImg, Line } from './auth.styles';
+import { 
+  BgImg, AuthBody, AuthBox, AuthForm, AuthFooter, Button, CancelIcon, 
+  ErrMsg, Input, InputBoxWrap, Wrap, LogoImg, Line 
+} from '../styles/auth.styles';
 import CloseIcon from '@mui/icons-material/Close';
 import { Link, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import axios from 'axios';
+import { UserContext } from '../App';
 
 const Login = () => {
   //유효성 검사
@@ -14,6 +18,8 @@ const Login = () => {
   //잘못된 비밀번호 입력시 출력할 에러 메시지
   const [passwordErrMsg, setpasswordErrMsg] = useState('');
   const navigate = useNavigate();
+  //App.js에 있는 accessToken 상태변수와 setAccessToken함수를 사용
+  const {setAccessToken} = useContext(UserContext);
 
   const onEmailChange = (e) => {
     //console.log(e.target.value)
@@ -79,6 +85,10 @@ const Login = () => {
         //생성한 토큰을 로컬스토리지에 저장
         localStorage.setItem('accessToken', res.data.accessToken)
         //사용자를 처음페이지로 리디렉션합니다.
+
+        //전역상태변수(App.js에 있는 accessToken상태)에 저장
+        setAccessToken(res.data.accessToken)
+
         navigate('/', {replace:false})
 
       }catch(err){//로그인 실패시 
@@ -119,7 +129,7 @@ const Login = () => {
               <Line className='line'></Line>
               <Link to="">비밀번호 찾기</Link>
               <Line className='line'></Line>
-              <Link to="/">회원가입 하기</Link>
+              <Link to="/join">회원가입 하기</Link>
             </AuthFooter>
           </AuthBody>
         </AuthBox>
